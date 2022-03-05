@@ -15,6 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.carloshenrique.workshopmongo.domain.User;
 import com.carloshenrique.workshopmongo.dto.UserDTO;
+import com.carloshenrique.workshopmongo.repository.UserRepository;
 import com.carloshenrique.workshopmongo.service.UserService;
 
 @RestController
@@ -23,6 +24,9 @@ public class UserResource {
 	
 	@Autowired
 	private UserService service;
+	
+	@Autowired
+	private UserRepository repo;
 	
 	@RequestMapping(method=RequestMethod.GET) //@GetMapping
 	public ResponseEntity<List<UserDTO>> findAll() {
@@ -43,5 +47,11 @@ public class UserResource {
 		obj = service.insert(obj);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
 		return ResponseEntity.created(uri).build();
+	}
+	
+	@RequestMapping(value="/{id}", method=RequestMethod.DELETE) //@GetMapping
+	public ResponseEntity<Void> delete(@PathVariable String id) {
+		repo.deleteById(id);
+		return ResponseEntity.noContent().build();
 	}
 }
